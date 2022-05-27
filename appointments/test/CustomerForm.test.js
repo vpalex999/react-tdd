@@ -57,7 +57,7 @@ describe('CustomerForm', () => {
 
 			render(
 				<CustomerForm
-					{...{[fieldName]: value}}
+					{...{ [fieldName]: value }}
 					onSubmit={(props) => expect(props[fieldName]).toEqual(value)}
 				/>
 			);
@@ -65,19 +65,19 @@ describe('CustomerForm', () => {
 			ReactTestUtils.Simulate.submit(form('customer'));
 		});
 
-	const itSubmitsNewValue = (fieldName, value) =>
-		it('saves new first name when submitted', async () => {
+	const itSubmitsNewValue = (fieldName) =>
+		it('saves new value when submitted', async () => {
 			expect.hasAssertions();
 
 			render(
 				<CustomerForm
 					{...{ [fieldName]: 'existingValue' }}
-					onSubmit={(props) => expect(props[fieldName]).toEqual(value)}
+					onSubmit={(props) => expect(props[fieldName]).toEqual('newValue')}
 				/>
 			);
 
 			ReactTestUtils.Simulate.change(field(fieldName), {
-				target: { value: value },
+				target: { value: 'newValue', name: fieldName },
 			});
 			ReactTestUtils.Simulate.submit(form('customer'));
 		});
@@ -94,16 +94,16 @@ describe('CustomerForm', () => {
 		itRendersALabel('firstName', 'First name');
 		itAssignAnIdThatMatchesTheLabelId('firstName', 'firstName');
 		itSubmitExistingValue('firstName', 'Ashley');
-		itSubmitsNewValue('firstName', 'First Name');
+		itSubmitsNewValue('firstName');
 	});
 
-  describe('last name field', () => {
+	describe('last name field', () => {
 		itRendersAsATextBox('lastName');
 		itIncludesTheExistingValue('lastName');
 		itRendersALabel('lastName', 'Last name');
 		itAssignAnIdThatMatchesTheLabelId('lastName', 'lastName');
 		itSubmitExistingValue('lastName', 'Ashley');
-		itSubmitsNewValue('lastName', 'Last Name');
+		itSubmitsNewValue('lastName');
 	});
 
 	describe('phone number field', () => {
@@ -112,6 +112,13 @@ describe('CustomerForm', () => {
 		itRendersALabel('phoneNumber', 'Phone number');
 		itAssignAnIdThatMatchesTheLabelId('phoneNumber', 'phoneNumber');
 		itSubmitExistingValue('phoneNumber', '12345');
-		itSubmitsNewValue('phoneNumber', '88888');
+		itSubmitsNewValue('phoneNumber');
+	});
+
+	it('has a submit button', () => {
+		render(<CustomerForm />);
+		const submitButton = container.querySelector('input[type="submit"]');
+
+		expect(submitButton).not.toBeNull();
 	});
 });
